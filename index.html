@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hispark-rs — Rust + QEMU for HiSilicon RISC-V</title>
+<meta name="description" content="Bare-metal Rust ecosystem for HiSilicon WS63 / BS2X RISC-V SoCs: PAC, HAL, runtime, custom toolchain, full-system QEMU, and probe-rs debug support — developed entirely in emulation.">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2230; --line:#30363d;
+    --fg:#e6edf3; --mut:#9aa7b4; --accent:#4dd0e1; --accent2:#7c9cff; --ok:#3fb950; --warn:#d29922; --no:#f85149;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#13243a 0,var(--bg) 60%);color:var(--fg);
+       font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  /* hero */
+  header{padding:84px 0 40px;text-align:center}
+  .logo{font-size:clamp(40px,8vw,72px);font-weight:800;letter-spacing:-.02em;
+        background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{font-size:clamp(17px,2.6vw,22px);color:var(--fg);margin:.4em auto 0;max-width:760px;font-weight:600}
+  .sub{color:var(--mut);max-width:720px;margin:14px auto 0}
+  .cta{margin:28px 0 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:10px 16px;border-radius:9px;font-weight:600;font-size:14px}
+  .btn.p{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;border:none}
+  .btn:hover{text-decoration:none;border-color:var(--accent)}
+  /* sections */
+  section{padding:34px 0;border-top:1px solid var(--line)}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+  pre.stack{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;
+            color:var(--mut);font-size:13px;line-height:1.5}
+  pre.stack b{color:var(--fg)} pre.stack .a{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:.15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card a.name{font-weight:700;font-size:15px}
+  .card p{margin:6px 0 0;color:var(--mut);font-size:13.5px}
+  .tagline{display:inline-block;font-size:11px;color:var(--accent2);border:1px solid var(--line);
+           border-radius:20px;padding:1px 9px;margin-bottom:10px}
+  ul.status{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  ul.status li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14.5px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:9px;vertical-align:1px}
+  .ok{background:var(--ok)} .warn{background:var(--warn)} .no{background:var(--no)}
+  pre.sh{background:#0a0e14;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13.5px;color:#cdd6e0}
+  pre.sh .c{color:#6b7785}
+  footer{border-top:1px solid var(--line);padding:30px 0 60px;text-align:center;color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">hispark-rs</div>
+  <p class="tag">Bare-metal <b>Rust</b> + <b>QEMU</b> for HiSilicon RISC-V SoCs — develop without the hardware.</p>
+  <p class="sub">A from-scratch embedded ecosystem for the HiSilicon <b>WS63</b> (Wi-Fi&nbsp;6 + BLE + SLE/NearLink)
+  and <b>BS2X / BS21</b> (BLE&nbsp;5.4 + SLE) RISC-V chips: peripheral-access crates, a safe HAL, a runtime,
+  a custom Rust toolchain, full-system QEMU machine models, and <code>probe-rs</code> debug support —
+  built and CI-tested <b>entirely in emulation</b>.</p>
+  <div class="cta">
+    <a class="btn p" href="https://github.com/hispark-rs/hisi-riscv-rs">Monorepo</a>
+    <a class="btn" href="https://github.com/hispark-rs/hisi-riscv-qemu">QEMU</a>
+    <a class="btn" href="https://github.com/hispark-rs/ws63-rust-toolchain">Toolchain</a>
+    <a class="btn" href="https://github.com/hispark-rs">GitHub org →</a>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <h2>The stack</h2>
+<pre class="stack">          <span class="a">ws63-svd / bs2x-svd</span>   CMSIS-SVD register descriptions
+                   │  svd2rust
+                   ▼
+          <b>ws63-pac / bs2x-pac</b>   peripheral-access crates (raw RegisterBlocks)
+                   │
+                   ▼
+          <b>hisi-riscv-hal</b>        safe embedded-hal 1.0 drivers + async/embassy
+                   │
+ <b>hisi-riscv-rt</b> ────┤            startup · linker scripts · interrupt vectors
+                   ▼
+          <b>ws63-examples</b>         blinky · uart_hello · dma · spi · i2c · embassy · net_ping …
+                   │  cargo build  (riscv32imfc, custom `ws63` toolchain)
+                   ▼
+ <span class="a">hisi-riscv-qemu</span>  ◀──  run with no board:  -M ws63 / -M bs21 / -M bs22 / -M bs20
+ <span class="a">probe-rs</span> (fork)  ◀──  on-chip debug: RISC-V Debug Module behind a CoreSight DAP</pre>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Repositories</h2>
+  <div class="grid">
+    <div class="card"><span class="tagline">monorepo</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rs">hisi-riscv-rs</a><p>Aggregates the whole stack as submodules + docs + ROADMAP.</p></div>
+    <div class="card"><span class="tagline">pac</span><br><a class="name" href="https://github.com/hispark-rs/ws63-pac">ws63-pac</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-pac">bs2x-pac</a><p>svd2rust-generated peripheral-access crates.</p></div>
+    <div class="card"><span class="tagline">hal</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-hal">hisi-riscv-hal</a><p>Safe HAL: GPIO/UART/SPI/I²C/DMA/timers + async &amp; embassy.</p></div>
+    <div class="card"><span class="tagline">runtime</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rt">hisi-riscv-rt</a><p>Startup assembly, linker scripts, interrupt vectors.</p></div>
+    <div class="card"><span class="tagline">emulation</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-qemu">hisi-riscv-qemu</a><p>QEMU machine models (-M ws63/bs21/bs22/bs20).</p></div>
+    <div class="card"><span class="tagline">toolchain</span><br><a class="name" href="https://github.com/hispark-rs/ws63-rust-toolchain">ws63-rust-toolchain</a><p>rustc with riscv32imfc baked in as a builtin target.</p></div>
+    <div class="card"><span class="tagline">debug</span><br><a class="name" href="https://github.com/hispark-rs/probe-rs">probe-rs</a><p>Fork adding WS63 debug support (mem-AP DTM + flash algo).</p></div>
+    <div class="card"><span class="tagline">flashing</span><br><a class="name" href="https://github.com/hispark-rs/hisiflash">hisiflash</a><p>Firmware flashing tool.</p></div>
+    <div class="card"><span class="tagline">examples · docs</span><br><a class="name" href="https://github.com/hispark-rs/ws63-examples">ws63-examples</a> · <a class="name" href="https://github.com/hispark-rs/ws63-guide">ws63-guide</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-guide">bs2x-guide</a><p>Sample apps and chip user guides.</p></div>
+    <div class="card"><span class="tagline">sdk forks</span><br><a class="name" href="https://github.com/hispark-rs/fbb_ws63-qemu">fbb_ws63-qemu</a> · <a class="name" href="https://github.com/hispark-rs/fbb_bs2x-qemu">fbb_bs2x-qemu</a><p>QEMU-runnable forks of the vendor C SDKs.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Status</h2>
+  <ul class="status">
+    <li><span class="dot ok"></span><b>Full QEMU bring-up</b> — blinky + uart_hello and the whole peripheral set boot and self-validate on <code>-M ws63</code> and the BS2X family.</li>
+    <li><span class="dot ok"></span><b>BS2X multi-chip</b> — bs21 / bs22 / bs20 machines; SPI, GADC, I²C, KEYSCAN, QDEC, RTC, TRNG, WDT, DMA, PDM, USB all exercised.</li>
+    <li><span class="dot ok"></span><b>probe-rs WS63 support</b> (software-complete) — RISC-V-over-CoreSight DTM, vendor debug sequence, flash-algorithm crate.</li>
+    <li><span class="dot warn"></span><b>Hardware-in-the-loop</b> — scaffolding ready; awaiting a board to validate clock/timing.</li>
+    <li><span class="dot no"></span><b>Connectivity (Wi-Fi / BLE / SLE)</b> — the north star; deferred behind HIL (the radio is a closed analog/PHY blob).</li>
+  </ul>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Quick start</h2>
+<pre class="sh"><span class="c"># clone the monorepo (submodules = the whole stack)</span>
+git clone --recursive https://github.com/hispark-rs/hisi-riscv-rs
+cd hisi-riscv-rs
+
+<span class="c"># install the custom toolchain (see ws63-rust-toolchain), then build for riscv32imfc</span>
+cargo build
+
+<span class="c"># run it with no hardware (see hisi-riscv-qemu)</span>
+qemu-system-riscv32 -M ws63 -nographic -kernel target/.../uart_hello</pre>
+</div></section>
+
+<footer><div class="wrap">
+  Reverse-engineered from the public HiSilicon <code>fbb_ws63</code> / <code>fbb_bs2x</code> SDKs. Not affiliated with HiSilicon.<br>
+  <a href="https://github.com/hispark-rs">github.com/hispark-rs</a>
+</div></footer>
+</body>
+</html>

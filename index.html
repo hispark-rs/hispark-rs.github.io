@@ -17,12 +17,17 @@
   a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
   .wrap{max-width:980px;margin:0 auto;padding:0 20px}
   code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  /* lang toggle */
+  .langtoggle{position:fixed;top:14px;right:16px;z-index:10;display:flex;border:1px solid var(--line);
+              border-radius:8px;overflow:hidden;background:var(--panel);font-size:13px;font-weight:600}
+  .langtoggle button{background:none;border:none;color:var(--mut);padding:6px 12px;cursor:pointer;font:inherit}
+  .langtoggle button.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a}
   /* hero */
   header{padding:84px 0 40px;text-align:center}
   .logo{font-size:clamp(40px,8vw,72px);font-weight:800;letter-spacing:-.02em;
         background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
   .tag{font-size:clamp(17px,2.6vw,22px);color:var(--fg);margin:.4em auto 0;max-width:760px;font-weight:600}
-  .sub{color:var(--mut);max-width:720px;margin:14px auto 0}
+  .sub{color:var(--mut);max-width:730px;margin:14px auto 0}
   .cta{margin:28px 0 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .btn{border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:10px 16px;border-radius:9px;font-weight:600;font-size:14px}
   .btn.p{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121a;border:none}
@@ -50,83 +55,111 @@
 </style>
 </head>
 <body>
+<div class="langtoggle" role="group" aria-label="language">
+  <button id="lang-en" onclick="setLang('en')">EN</button>
+  <button id="lang-zh" onclick="setLang('zh')">中文</button>
+</div>
+
 <header><div class="wrap">
   <div class="logo">hispark-rs</div>
-  <p class="tag">Bare-metal <b>Rust</b> + <b>QEMU</b> for HiSilicon RISC-V SoCs — develop without the hardware.</p>
-  <p class="sub">A from-scratch embedded ecosystem for the HiSilicon <b>WS63</b> (Wi-Fi&nbsp;6 + BLE + SLE/NearLink)
-  and <b>BS2X / BS21</b> (BLE&nbsp;5.4 + SLE) RISC-V chips: peripheral-access crates, a safe HAL, a runtime,
-  a custom Rust toolchain, full-system QEMU machine models, and <code>probe-rs</code> debug support —
-  built and CI-tested <b>entirely in emulation</b>.</p>
+  <p class="tag"
+     data-en="Bare-metal <b>Rust</b> + <b>QEMU</b> for HiSilicon RISC-V SoCs — develop without the hardware."
+     data-zh="面向海思 RISC-V SoC 的裸机 <b>Rust</b> + <b>QEMU</b> —— 无需硬件即可开发。"></p>
+  <p class="sub"
+     data-en="A from-scratch embedded ecosystem for the HiSilicon <b>WS63</b> (Wi-Fi&nbsp;6 + BLE + SLE/NearLink) and <b>BS2X / BS21</b> (BLE&nbsp;5.4 + SLE) RISC-V chips: peripheral-access crates, a safe HAL, a runtime, a custom Rust toolchain, full-system QEMU machine models, and <code>probe-rs</code> debug support — built and CI-tested <b>entirely in emulation</b>."
+     data-zh="为海思 <b>WS63</b>(Wi-Fi&nbsp;6 + BLE + SLE/星闪)与 <b>BS2X / BS21</b>(BLE&nbsp;5.4 + SLE)RISC-V 芯片从零打造的嵌入式生态:外设访问 crate、安全 HAL、运行时、自定义 Rust 工具链、全系统 QEMU 机器模型,以及 <code>probe-rs</code> 调试支持 —— <b>全程在仿真中</b>构建并做 CI 测试。"></p>
   <div class="cta">
-    <a class="btn p" href="https://github.com/hispark-rs/hisi-riscv-rs">Monorepo</a>
-    <a class="btn" href="https://github.com/hispark-rs/hisi-riscv-qemu">QEMU</a>
-    <a class="btn" href="https://github.com/hispark-rs/ws63-rust-toolchain">Toolchain</a>
-    <a class="btn" href="https://github.com/hispark-rs">GitHub org →</a>
+    <a class="btn p" href="https://github.com/hispark-rs/hisi-riscv-rs" data-en="Monorepo" data-zh="单一仓库"></a>
+    <a class="btn" href="https://github.com/hispark-rs/hisi-riscv-qemu" data-en="QEMU" data-zh="QEMU"></a>
+    <a class="btn" href="https://github.com/hispark-rs/ws63-rust-toolchain" data-en="Toolchain" data-zh="工具链"></a>
+    <a class="btn" href="https://github.com/hispark-rs" data-en="GitHub org →" data-zh="GitHub 组织 →"></a>
   </div>
 </div></header>
 
 <section><div class="wrap">
-  <h2>The stack</h2>
-<pre class="stack">          <span class="a">ws63-svd / bs2x-svd</span>   CMSIS-SVD register descriptions
+  <h2 data-en="The stack" data-zh="技术栈"></h2>
+<pre class="stack">          <span class="a">ws63-svd / bs2x-svd</span>   <span data-en="CMSIS-SVD register descriptions" data-zh="CMSIS-SVD 寄存器描述"></span>
                    │  svd2rust
                    ▼
-          <b>ws63-pac / bs2x-pac</b>   peripheral-access crates (raw RegisterBlocks)
+          <b>ws63-pac / bs2x-pac</b>   <span data-en="peripheral-access crates (raw RegisterBlocks)" data-zh="外设访问 crate（裸 RegisterBlock）"></span>
                    │
                    ▼
-          <b>hisi-riscv-hal</b>        safe embedded-hal 1.0 drivers + async/embassy
+          <b>hisi-riscv-hal</b>        <span data-en="safe embedded-hal 1.0 drivers + async/embassy" data-zh="安全的 embedded-hal 1.0 驱动 + async/embassy"></span>
                    │
- <b>hisi-riscv-rt</b> ────┤            startup · linker scripts · interrupt vectors
+ <b>hisi-riscv-rt</b> ────┤            <span data-en="startup · linker scripts · interrupt vectors" data-zh="启动 · 链接脚本 · 中断向量"></span>
                    ▼
           <b>ws63-examples</b>         blinky · uart_hello · dma · spi · i2c · embassy · net_ping …
-                   │  cargo build  (riscv32imfc, custom `ws63` toolchain)
+                   │  cargo build  (riscv32imfc)
                    ▼
- <span class="a">hisi-riscv-qemu</span>  ◀──  run with no board:  -M ws63 / -M bs21 / -M bs22 / -M bs20
- <span class="a">probe-rs</span> (fork)  ◀──  on-chip debug: RISC-V Debug Module behind a CoreSight DAP</pre>
+ <span class="a">hisi-riscv-qemu</span>  ◀──  <span data-en="run with no board:" data-zh="无需开发板即可运行："></span>  -M ws63 / -M bs21 / -M bs22 / -M bs20
+ <span class="a">probe-rs</span> (fork)  ◀──  <span data-en="on-chip debug: RISC-V Debug Module behind a CoreSight DAP" data-zh="片上调试：RISC-V 调试模块挂在 CoreSight DAP 之后"></span></pre>
 </div></section>
 
 <section><div class="wrap">
-  <h2>Repositories</h2>
+  <h2 data-en="Repositories" data-zh="仓库"></h2>
   <div class="grid">
-    <div class="card"><span class="tagline">monorepo</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rs">hisi-riscv-rs</a><p>Aggregates the whole stack as submodules + docs + ROADMAP.</p></div>
-    <div class="card"><span class="tagline">pac</span><br><a class="name" href="https://github.com/hispark-rs/ws63-pac">ws63-pac</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-pac">bs2x-pac</a><p>svd2rust-generated peripheral-access crates.</p></div>
-    <div class="card"><span class="tagline">hal</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-hal">hisi-riscv-hal</a><p>Safe HAL: GPIO/UART/SPI/I²C/DMA/timers + async &amp; embassy.</p></div>
-    <div class="card"><span class="tagline">runtime</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rt">hisi-riscv-rt</a><p>Startup assembly, linker scripts, interrupt vectors.</p></div>
-    <div class="card"><span class="tagline">emulation</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-qemu">hisi-riscv-qemu</a><p>QEMU machine models (-M ws63/bs21/bs22/bs20).</p></div>
-    <div class="card"><span class="tagline">toolchain</span><br><a class="name" href="https://github.com/hispark-rs/ws63-rust-toolchain">ws63-rust-toolchain</a><p>rustc with riscv32imfc baked in as a builtin target.</p></div>
-    <div class="card"><span class="tagline">debug</span><br><a class="name" href="https://github.com/hispark-rs/probe-rs">probe-rs</a><p>Fork adding WS63 debug support (mem-AP DTM + flash algo).</p></div>
-    <div class="card"><span class="tagline">flashing</span><br><a class="name" href="https://github.com/hispark-rs/hisiflash">hisiflash</a><p>Firmware flashing tool.</p></div>
-    <div class="card"><span class="tagline">examples · docs</span><br><a class="name" href="https://github.com/hispark-rs/ws63-examples">ws63-examples</a> · <a class="name" href="https://github.com/hispark-rs/ws63-guide">ws63-guide</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-guide">bs2x-guide</a><p>Sample apps and chip user guides.</p></div>
-    <div class="card"><span class="tagline">sdk forks</span><br><a class="name" href="https://github.com/hispark-rs/fbb_ws63-qemu">fbb_ws63-qemu</a> · <a class="name" href="https://github.com/hispark-rs/fbb_bs2x-qemu">fbb_bs2x-qemu</a><p>QEMU-runnable forks of the vendor C SDKs.</p></div>
+    <div class="card"><span class="tagline" data-en="monorepo" data-zh="单一仓库"></span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rs">hisi-riscv-rs</a><p data-en="Aggregates the whole stack as submodules + docs + ROADMAP." data-zh="以子模块聚合整个技术栈 + 文档 + ROADMAP。"></p></div>
+    <div class="card"><span class="tagline">pac</span><br><a class="name" href="https://github.com/hispark-rs/ws63-pac">ws63-pac</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-pac">bs2x-pac</a><p data-en="svd2rust-generated peripheral-access crates." data-zh="svd2rust 生成的外设访问 crate。"></p></div>
+    <div class="card"><span class="tagline">hal</span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-hal">hisi-riscv-hal</a><p data-en="Safe HAL: GPIO/UART/SPI/I²C/DMA/timers + async &amp; embassy." data-zh="安全 HAL:GPIO/UART/SPI/I²C/DMA/定时器 + async 与 embassy。"></p></div>
+    <div class="card"><span class="tagline" data-en="runtime" data-zh="运行时"></span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-rt">hisi-riscv-rt</a><p data-en="Startup assembly, linker scripts, interrupt vectors." data-zh="启动汇编、链接脚本、中断向量。"></p></div>
+    <div class="card"><span class="tagline" data-en="emulation" data-zh="仿真"></span><br><a class="name" href="https://github.com/hispark-rs/hisi-riscv-qemu">hisi-riscv-qemu</a><p data-en="QEMU machine models (-M ws63/bs21/bs22/bs20)." data-zh="QEMU 机器模型(-M ws63/bs21/bs22/bs20)。"></p></div>
+    <div class="card"><span class="tagline" data-en="toolchain" data-zh="工具链"></span><br><a class="name" href="https://github.com/hispark-rs/ws63-rust-toolchain">ws63-rust-toolchain</a><p data-en="rustc with riscv32imfc baked in as a builtin target." data-zh="把 riscv32imfc 作为内建 target 编进的 rustc。"></p></div>
+    <div class="card"><span class="tagline" data-en="debug" data-zh="调试"></span><br><a class="name" href="https://github.com/hispark-rs/probe-rs">probe-rs</a><p data-en="Fork adding WS63 debug support (mem-AP DTM + flash algo)." data-zh="加入 WS63 调试支持的 fork(mem-AP DTM + flash 算法)。"></p></div>
+    <div class="card"><span class="tagline" data-en="flashing" data-zh="烧录"></span><br><a class="name" href="https://github.com/hispark-rs/hisiflash">hisiflash</a><p data-en="Firmware flashing tool." data-zh="固件烧录工具。"></p></div>
+    <div class="card"><span class="tagline" data-en="examples · docs" data-zh="示例 · 文档"></span><br><a class="name" href="https://github.com/hispark-rs/ws63-examples">ws63-examples</a> · <a class="name" href="https://github.com/hispark-rs/ws63-guide">ws63-guide</a> · <a class="name" href="https://github.com/hispark-rs/bs2x-guide">bs2x-guide</a><p data-en="Sample apps and chip user guides." data-zh="示例程序与芯片用户指南。"></p></div>
+    <div class="card"><span class="tagline" data-en="sdk forks" data-zh="SDK forks"></span><br><a class="name" href="https://github.com/hispark-rs/fbb_ws63-qemu">fbb_ws63-qemu</a> · <a class="name" href="https://github.com/hispark-rs/fbb_bs2x-qemu">fbb_bs2x-qemu</a><p data-en="QEMU-runnable forks of the vendor C SDKs." data-zh="可在 QEMU 上运行的厂商 C SDK fork。"></p></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <h2>Status</h2>
+  <h2 data-en="Status" data-zh="状态"></h2>
   <ul class="status">
-    <li><span class="dot ok"></span><b>Full QEMU bring-up</b> — blinky + uart_hello and the whole peripheral set boot and self-validate on <code>-M ws63</code> and the BS2X family.</li>
-    <li><span class="dot ok"></span><b>BS2X multi-chip</b> — bs21 / bs22 / bs20 machines; SPI, GADC, I²C, KEYSCAN, QDEC, RTC, TRNG, WDT, DMA, PDM, USB all exercised.</li>
-    <li><span class="dot ok"></span><b>probe-rs WS63 support</b> (software-complete) — RISC-V-over-CoreSight DTM, vendor debug sequence, flash-algorithm crate.</li>
-    <li><span class="dot warn"></span><b>Hardware-in-the-loop</b> — scaffolding ready; awaiting a board to validate clock/timing.</li>
-    <li><span class="dot no"></span><b>Connectivity (Wi-Fi / BLE / SLE)</b> — the north star; deferred behind HIL (the radio is a closed analog/PHY blob).</li>
+    <li><span class="dot ok"></span><span data-en="<b>Full QEMU bring-up</b> — blinky + uart_hello and the whole peripheral set boot and self-validate on <code>-M ws63</code> and the BS2X family." data-zh="<b>QEMU 全栈跑通</b> —— blinky + uart_hello 及整套外设在 <code>-M ws63</code> 和 BS2X 家族上启动并自校验。"></span></li>
+    <li><span class="dot ok"></span><span data-en="<b>BS2X multi-chip</b> — bs21 / bs22 / bs20 machines; SPI, GADC, I²C, KEYSCAN, QDEC, RTC, TRNG, WDT, DMA, PDM, USB all exercised." data-zh="<b>BS2X 多芯片</b> —— bs21 / bs22 / bs20 三台机器;SPI、GADC、I²C、KEYSCAN、QDEC、RTC、TRNG、WDT、DMA、PDM、USB 全部验证。"></span></li>
+    <li><span class="dot ok"></span><span data-en="<b>probe-rs WS63 support</b> (software-complete) — RISC-V-over-CoreSight DTM, vendor debug sequence, flash-algorithm crate." data-zh="<b>probe-rs WS63 支持</b>(软件层完成)—— RISC-V-经-CoreSight DTM、厂商调试序列、flash 算法 crate。"></span></li>
+    <li><span class="dot warn"></span><span data-en="<b>Hardware-in-the-loop</b> — scaffolding ready; awaiting a board to validate clock/timing." data-zh="<b>硬件在环(HIL)</b> —— 脚手架就绪;等开发板验证时钟/时序。"></span></li>
+    <li><span class="dot no"></span><span data-en="<b>Connectivity (Wi-Fi / BLE / SLE)</b> — the north star; deferred behind HIL (the radio is a closed analog/PHY blob)." data-zh="<b>连接性(Wi-Fi / BLE / SLE)</b> —— 北极星目标;排在 HIL 之后(无线电是闭源的模拟/PHY blob)。"></span></li>
   </ul>
 </div></section>
 
 <section><div class="wrap">
-  <h2>Quick start</h2>
-<pre class="sh"><span class="c"># clone the monorepo (submodules = the whole stack)</span>
+  <h2 data-en="Quick start" data-zh="快速开始"></h2>
+<pre class="sh"><span class="c" data-en="# clone the monorepo (submodules = the whole stack)" data-zh="# 克隆单一仓库(子模块 = 整个技术栈)"></span>
 git clone --recursive https://github.com/hispark-rs/hisi-riscv-rs
 cd hisi-riscv-rs
 
-<span class="c"># install the custom toolchain (see ws63-rust-toolchain), then build for riscv32imfc</span>
+<span class="c" data-en="# install the custom toolchain (see ws63-rust-toolchain), then build for riscv32imfc" data-zh="# 安装自定义工具链(见 ws63-rust-toolchain),然后为 riscv32imfc 构建"></span>
 cargo build
 
-<span class="c"># run it with no hardware (see hisi-riscv-qemu)</span>
+<span class="c" data-en="# run it with no hardware (see hisi-riscv-qemu)" data-zh="# 无需硬件即可运行(见 hisi-riscv-qemu)"></span>
 qemu-system-riscv32 -M ws63 -nographic -kernel target/.../uart_hello</pre>
 </div></section>
 
 <footer><div class="wrap">
-  Reverse-engineered from the public HiSilicon <code>fbb_ws63</code> / <code>fbb_bs2x</code> SDKs. Not affiliated with HiSilicon.<br>
+  <span data-en="Reverse-engineered from the public HiSilicon <code>fbb_ws63</code> / <code>fbb_bs2x</code> SDKs. Not affiliated with HiSilicon."
+        data-zh="基于公开的海思 <code>fbb_ws63</code> / <code>fbb_bs2x</code> SDK 逆向实现。与海思无隶属关系。"></span><br>
   <a href="https://github.com/hispark-rs">github.com/hispark-rs</a>
 </div></footer>
+
+<script>
+  function setLang(lang, persist=true){
+    lang = (lang === 'zh') ? 'zh' : 'en';
+    document.documentElement.lang = (lang === 'zh') ? 'zh-CN' : 'en';
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      var v = el.getAttribute('data-' + lang);
+      if (v !== null) el.innerHTML = v;
+    });
+    var en = document.getElementById('lang-en'), zh = document.getElementById('lang-zh');
+    if (en && zh){ en.classList.toggle('on', lang==='en'); zh.classList.toggle('on', lang==='zh'); }
+    if (persist){ try { localStorage.setItem('lang', lang); } catch(e){} }
+  }
+  // Auto: saved choice → browser language → English.
+  (function(){
+    var saved = null; try { saved = localStorage.getItem('lang'); } catch(e){}
+    var nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    var lang = saved || (nav.indexOf('zh') === 0 ? 'zh' : 'en');
+    setLang(lang, false);
+  })();
+</script>
 </body>
 </html>
